@@ -1,11 +1,13 @@
 package com.caci.brickapplication.api;
 
 import com.caci.brickapplication.api.dto.CreateOrderRequestDto;
+import com.caci.brickapplication.api.dto.GetOrderResponseDto;
+import com.caci.brickapplication.api.dto.GetOrdersResponseDto;
 import com.caci.brickapplication.service.OrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 public class OrderController {
@@ -19,5 +21,15 @@ public class OrderController {
     @PostMapping(value = "/submitOrder", produces = "application/json")
     public ResponseEntity<String> submitOrder(@RequestBody CreateOrderRequestDto requestDto) {
         return ResponseEntity.accepted().body(String.valueOf(orderService.createOrder(requestDto.brick().brickSize(), requestDto.quantity(), requestDto.customer())));
+    }
+
+    @GetMapping(value = "/getOrder/{reference}", produces = "application/json")
+    public ResponseEntity<GetOrderResponseDto> getOrderByReference(@PathVariable String reference) {
+        return ResponseEntity.ok().body(new GetOrderResponseDto(orderService.retrieveOrderByReference(UUID.fromString(reference))));
+    }
+
+    @GetMapping(value = "/getOrders", produces = "application/json")
+    public ResponseEntity<GetOrdersResponseDto> getAllOrders() {
+        return ResponseEntity.ok().body(new GetOrdersResponseDto(orderService.retrieveAllOrders()));
     }
 }

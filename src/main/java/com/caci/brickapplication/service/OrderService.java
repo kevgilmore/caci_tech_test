@@ -24,4 +24,14 @@ public class OrderService {
         orderBook.put(newOrder.reference(), newOrder);
         return orderBook.get(newOrder.reference()).reference();
     }
+
+    public Order retrieveOrderByReference(UUID reference) {
+        return orderBook.containsKey(reference) ? orderBook.get(reference) : new Order(null, null, null, 0, null);
+    }
+
+    public List<Order> retrieveAllOrders() {
+        return orderBook.values().stream()
+                .map(o -> new Order(o.reference(), o.status(), o.brick(), o.quantity(), o.customer()))
+                .toList();
+    }
 }
