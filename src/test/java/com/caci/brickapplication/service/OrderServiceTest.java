@@ -2,6 +2,7 @@ package com.caci.brickapplication.service;
 
 import com.caci.brickapplication.model.Order;
 import com.caci.brickapplication.model.Size;
+import com.caci.brickapplication.model.Status;
 import com.caci.brickapplication.testUtil.TestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,19 @@ class OrderServiceTest {
 
         // THEN
         assertNotEquals(result, TestData.testOrder.reference());
+        assertEquals(1, testOrderBook.size());
+    }
+
+    @Test
+    void Mark_order_as_dispatched() {
+        // GIVEN
+        testOrderBook.put(TestData.testOrder.reference(), TestData.testOrder);
+
+        // WHEN
+        orderService.markOrderAsDispatched(TestData.testOrder.reference());
+
+        // THEN
+        assertEquals(Status.DISPATCHED, testOrderBook.get(TestData.testOrder.reference()).status());
         assertEquals(1, testOrderBook.size());
     }
 }

@@ -38,9 +38,17 @@ public class OrderService {
     public UUID updateOrder(UUID reference, int newQuantity) {
         if (orderBook.containsKey(reference)) {
             Order oldOrder = orderBook.get(reference);
-            orderBook.remove(reference);
+            orderBook.remove(reference); // the old order could be kept if required
             return createOrder(oldOrder.brick().brickSize(), newQuantity, oldOrder.customer());
         }
         return null;
+    }
+
+    public void markOrderAsDispatched(UUID reference) {
+        if (orderBook.containsKey(reference)) {
+            Order oldOrder = orderBook.get(reference);
+            orderBook.remove(reference);
+            orderBook.put(reference, new Order(reference, Status.DISPATCHED, oldOrder.brick(), oldOrder.quantity(), oldOrder.customer()));
+        }
     }
 }
