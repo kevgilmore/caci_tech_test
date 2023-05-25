@@ -1,9 +1,6 @@
 package com.caci.brickapplication.api;
 
-import com.caci.brickapplication.api.dto.CreateOrderRequestDto;
-import com.caci.brickapplication.api.dto.GetOrderResponseDto;
-import com.caci.brickapplication.api.dto.GetOrdersResponseDto;
-import com.caci.brickapplication.api.dto.UpdateOrderRequestDto;
+import com.caci.brickapplication.api.dto.*;
 import com.caci.brickapplication.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,13 @@ public class OrderController {
 
     @PutMapping(value = "/updateOrder", produces = "application/json")
     public ResponseEntity<String> updateOrder(@RequestBody UpdateOrderRequestDto requestDto) {
-        return ResponseEntity.ok().body(String.valueOf(orderService.updateOrder(UUID.fromString(requestDto.orderReference()), requestDto.quantity())));
+        UUID ref = orderService.updateOrder(UUID.fromString(requestDto.orderReference()), requestDto.quantity());
+        return ref != null ? ResponseEntity.ok().body(String.valueOf(ref)) : ResponseEntity.badRequest().body("invalid reference");
+    }
+
+    @PutMapping(value = "/markOrderAsDispatched", produces = "application/json")
+    public ResponseEntity<String> markAsDispatched(@RequestBody FulfilOrderRequestDto requestDto) {
+        boolean canBeMarkedAsDispatched = orderService.markOrderAsDispatched(UUID.fromString(requestDto.orderReference()));
+        return canBeMarkedAsDispatched ? ResponseEntity.ok().body(requestDto.orderReference()) : ResponseEntity.badRequest().body("order already marked as dispatched");
     }
 }

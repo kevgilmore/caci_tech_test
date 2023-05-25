@@ -44,11 +44,13 @@ public class OrderService {
         return null;
     }
 
-    public void markOrderAsDispatched(UUID reference) {
-        if (orderBook.containsKey(reference)) {
+    public boolean markOrderAsDispatched(UUID reference) {
+        if (orderBook.containsKey(reference) && !orderBook.get(reference).status().equals(Status.DISPATCHED)) {
             Order oldOrder = orderBook.get(reference);
             orderBook.remove(reference);
             orderBook.put(reference, new Order(reference, Status.DISPATCHED, oldOrder.brick(), oldOrder.quantity(), oldOrder.customer()));
+            return true;
         }
+        return false;
     }
 }

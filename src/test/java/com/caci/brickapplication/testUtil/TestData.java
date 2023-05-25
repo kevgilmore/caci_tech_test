@@ -22,4 +22,8 @@ public class TestData {
 
     public static final Order testOrder3 =
             new Order(UUID.fromString("b34639e1-afbd-46aa-acc9-c54bfc3dccf2"), Status.ACTIVE, new Brick(Size.LARGE), 500, testCustomer3);
+
+    public static final Order testOrderStatusDispatched =
+            new Order(UUID.fromString("0f0d272c-268f-45ba-b483-9325202c2d2b"), Status.DISPATCHED, new Brick(Size.SMALL), 5, testCustomer);
+
 }

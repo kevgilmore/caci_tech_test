@@ -61,9 +61,10 @@ class OrderServiceTest {
     void Retrieve_order_with_invalid_reference() {
         // GIVEN
         testOrderBook.put(TestData.testOrder.reference(), TestData.testOrder);
+        UUID invalidReference = UUID.randomUUID();
 
         // WHEN
-        Order result = orderService.retrieveOrderByReference(UUID.randomUUID());
+        Order result = orderService.retrieveOrderByReference(invalidReference);
 
         // THEN
         assertNull(result.reference());
@@ -105,15 +106,44 @@ class OrderServiceTest {
     }
 
     @Test
+    void Update_order_for_bricks_with_invalid_reference() {
+        // GIVEN
+        testOrderBook.put(TestData.testOrder.reference(), TestData.testOrder);
+        UUID invalidReference = UUID.randomUUID();
+
+        // WHEN
+        UUID result = orderService.updateOrder(invalidReference, 5);
+
+        // THEN
+        assertNull(result);
+        assertEquals(1, testOrderBook.size());
+    }
+
+    @Test
     void Mark_order_as_dispatched() {
         // GIVEN
         testOrderBook.put(TestData.testOrder.reference(), TestData.testOrder);
 
         // WHEN
-        orderService.markOrderAsDispatched(TestData.testOrder.reference());
+        boolean result = orderService.markOrderAsDispatched(TestData.testOrder.reference());
 
         // THEN
+        assertTrue(result);
         assertEquals(Status.DISPATCHED, testOrderBook.get(TestData.testOrder.reference()).status());
+        assertEquals(1, testOrderBook.size());
+    }
+
+    @Test
+    void Mark_order_as_dispatched_when_already_dispatched() {
+        // GIVEN
+        testOrderBook.put(TestData.testOrderStatusDispatched.reference(), TestData.testOrderStatusDispatched);
+
+        // WHEN
+        boolean result = orderService.markOrderAsDispatched(TestData.testOrderStatusDispatched.reference());
+
+        // THEN
+        assertFalse(result);
+        assertEquals(Status.DISPATCHED, testOrderBook.get(TestData.testOrderStatusDispatched.reference()).status());
         assertEquals(1, testOrderBook.size());
     }
 }
