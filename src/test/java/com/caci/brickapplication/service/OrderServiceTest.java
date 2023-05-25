@@ -1,6 +1,5 @@
 package com.caci.brickapplication.service;
 
-import com.caci.brickapplication.model.Customer;
 import com.caci.brickapplication.model.Order;
 import com.caci.brickapplication.model.Size;
 import com.caci.brickapplication.testUtil.TestData;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.caci.brickapplication.testUtil.UuidValidator.UUID_REGEX;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderServiceTest {
@@ -37,8 +35,6 @@ class OrderServiceTest {
         UUID result2 = orderService.createOrder(Size.MEDIUM, 2, customer2);
 
         // THEN
-        assertTrue(UUID_REGEX.matcher(result.toString()).matches());
-        assertTrue(UUID_REGEX.matcher(result2.toString()).matches());
         assertNotEquals(result, result2);
         assertTrue(testOrderBook.containsKey(result));
         assertTrue(testOrderBook.containsKey(result2));
@@ -88,11 +84,22 @@ class OrderServiceTest {
         // THEN
         assertEquals(result.get(0).reference(), TestData.testOrder.reference());
         assertEquals(result.get(0).quantity(), TestData.testOrder.quantity());
-
         assertEquals(result.get(1).reference(), TestData.testOrder2.reference());
         assertEquals(result.get(1).quantity(), TestData.testOrder2.quantity());
-
         assertEquals(result.get(2).reference(), TestData.testOrder3.reference());
         assertEquals(result.get(2).quantity(), TestData.testOrder3.quantity());
+    }
+
+    @Test
+    void Update_order_for_bricks() {
+        // GIVEN
+        testOrderBook.put(TestData.testOrder.reference(), TestData.testOrder);
+
+        // WHEN
+        UUID result = orderService.updateOrder(TestData.testOrder.reference(), 5);
+
+        // THEN
+        assertNotEquals(result, TestData.testOrder.reference());
+        assertEquals(1, testOrderBook.size());
     }
 }

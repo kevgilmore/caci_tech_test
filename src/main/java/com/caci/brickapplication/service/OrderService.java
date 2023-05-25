@@ -34,4 +34,13 @@ public class OrderService {
                 .map(o -> new Order(o.reference(), o.status(), o.brick(), o.quantity(), o.customer()))
                 .toList();
     }
+
+    public UUID updateOrder(UUID reference, int newQuantity) {
+        if (orderBook.containsKey(reference)) {
+            Order oldOrder = orderBook.get(reference);
+            orderBook.remove(reference);
+            return createOrder(oldOrder.brick().brickSize(), newQuantity, oldOrder.customer());
+        }
+        return null;
+    }
 }
